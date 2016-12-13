@@ -1,0 +1,47 @@
+<canvas id="canvas" width="600px" heght="600px">
+</canvas>
+<img id="new_image">
+<script>
+    var image = new Image()
+    image.src = "popper_icon_256.png"
+    var canvas = document.getElementById('canvas')
+    var ctx = canvas.getContext('2d')
+    var anotherCanvas = document.createElement('canvas')
+    anotherCanvas.width = canvas.width
+    anotherCanvas.height = canvas.height
+    var anotherCtx = anotherCanvas.getContext('2d')
+
+    var copy_and_create = (imgData,x,y) => {
+        anotherCtx.putImageData(imgData,x,y)
+        document.getElementById('new_image').src = anotherCanvas.toDataURL()
+    }
+    var draw = (x,y)=> {
+        ctx.clearRect(0,0,canvas.width,canvas.height)
+        ctx.drawImage(image,0,0)
+        var imgData = ctx.getImageData(x,y,image.width/10,image.height/10)
+        copy_and_create(imgData,x,y)
+        ctx.strokeRect(x,y,image.width/10,image.height/10)
+
+    }
+
+    var isDown = false
+    window.onmousedown = (event) => {
+        if(!isDown) {
+            isDown = true
+            draw(event.pageX,event.pageY)
+        }
+    }
+    window.onmousemove = (event) => {
+        if(isDown && event.pageX>=0 && event.pageX<image.width && event.pageY>=0 && event.pageY<image.height) {
+
+            draw(event.pageX,event.pageY)
+        }
+    }
+    window.onmouseup = (event) => {
+        if(isDown) {
+            isDown = false
+            draw(event.pageX,event.pageY)
+        }
+    }
+    //draw(0,0)
+</script>
